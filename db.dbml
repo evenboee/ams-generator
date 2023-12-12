@@ -16,6 +16,8 @@ Table courses {
 Table assignments {
   // TODO: consider making id sep. val.
   course int [pk, ref: > courses.id]
+  name varchar [not null]
+  reviews_per_submission int [not null, default: 0]
 
   time_due timestamptz [not null]
 }
