@@ -1,0 +1,109 @@
+Table courses {
+  id serial [pk]
+  code varchar [not null] // e.g. IDATG1001
+  year int [not null]
+
+  // teacher
+  // requirements
+  // course contents
+  // and whatnot...
+
+  Indexes {
+    (code, year) [unique]
+  }
+}
+
+Table assignments {
+  // TODO: consider making id sep. val.
+  course int [pk, ref: > courses.id]
+
+  time_due timestamptz [not null]
+}
+
+Table questions {
+  id serial [pk]
+  assignment int [not null, ref: > assignments.course]
+  prompt varchar [not null]
+
+  order int [not null]
+
+  Indexes {
+    order
+  }
+}
+
+Table users {
+  id varchar [pk]
+  display_name varchar [not null]
+}
+
+Table user_course_enrollments {
+  user varchar [not null, ref: > users.id]
+  course int [not null, ref: > courses.id]
+
+  Indexes {
+    (user, course) [pk]
+    user
+    course
+  }
+}
+
+Table submissions {
+  id serial [pk]
+  user varchar [not null, ref: > users.id]
+  assignment int [not null, ref: > assignments.course]
+
+  created_at timestamptz [not null, default: `now()`]
+
+  Indexes {
+    // implicitly allowing multiple submissions per user per assignment
+    //   therefore, index on created_at to allow ordering
+    user
+    assignment
+    created_at
+  }
+}
+
+Table answers {
+  id serial [pk]
+  question int [not null, ref: > questions.id]
+  submission int [not null, ref: > submissions.id]
+
+  answer varchar [not null]
+
+  Indexes {
+    (question, submission) [unique]
+    submission
+  }
+}
+
+Table reviews {
+  id serial [pk]
+  submission int [not null, ref: > submissions.id]
+  reviewer_id varchar [not null, ref: > users.id]
+
+  finished_at timestamptz
+  created_at timestamptz [not null, default: `now()`]
+
+  Indexes {
+    (submission, reviewer_id) [unique]
+    submission
+    reviewer_id
+  }
+}
+
+Table feedback {
+  id serial [pk]
+
+  review int [not null, ref: > reviews.id]
+  answer int [not null, ref: > answers.id]
+
+  rating int [not null]
+  feedback varchar [not null]
+
+  Indexes {
+    (review, answer) [unique]
+    review
+    answer
+  }
+}

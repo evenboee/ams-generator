@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:15-alpine3.18
+    container_name: templ-demo-db
+    restart: unless-stopped
+    volumes:
+      - ./dbdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+      PGPORT: ${DB_PORT}
+    ports:
+      - ${DB_PORT}:${DB_PORT}
