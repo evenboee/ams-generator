@@ -14,13 +14,16 @@ Table courses {
 }
 
 Table assignments {
-  // TODO: consider making id sep. val.
   id serial [pk]
   name varchar [not null]
   course int [not null, ref: > courses.id]
   reviews_per_submission int [not null, default: 0]
 
   time_due timestamptz [not null]
+
+  Indexes {
+    course
+  }
 }
 
 Table questions {
@@ -32,6 +35,7 @@ Table questions {
 
   Indexes {
     order
+    assignment
   }
 }
 
@@ -77,6 +81,7 @@ Table answers {
   Indexes {
     (question, submission) [unique]
     submission
+    question
   }
 }
 

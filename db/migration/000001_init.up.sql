@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2023-12-12T23:31:36.823Z
+-- Generated at: 2023-12-13T10:36:06.496Z
 
 CREATE TABLE "courses" (
   "id" serial PRIMARY KEY,
@@ -66,7 +66,11 @@ CREATE TABLE "feedback" (
 
 CREATE UNIQUE INDEX ON "courses" ("code", "year");
 
+CREATE INDEX ON "assignments" ("course");
+
 CREATE INDEX ON "questions" ("order");
+
+CREATE INDEX ON "questions" ("assignment");
 
 CREATE INDEX ON "user_course_enrollments" ("user");
 
@@ -81,6 +85,8 @@ CREATE INDEX ON "submissions" ("created_at");
 CREATE UNIQUE INDEX ON "answers" ("question", "submission");
 
 CREATE INDEX ON "answers" ("submission");
+
+CREATE INDEX ON "answers" ("question");
 
 CREATE UNIQUE INDEX ON "reviews" ("submission", "reviewer_id");
 
