@@ -10,29 +10,18 @@ import (
 )
 
 const createAnswer = `-- name: CreateAnswer :one
-INSERT INTO "answers" ("id", "question", "submission", "answer") VALUES ($1, $2, $3, $4) RETURNING id, question, submission, answer
+INSERT INTO "answers" ("question", "submission", "answer") VALUES ($1, $2, $3) RETURNING "id"
 `
 
 type CreateAnswerParams struct {
-	ID         int32  `json:"id"`
 	Question   int32  `json:"question"`
 	Submission int32  `json:"submission"`
 	Answer     string `json:"answer"`
 }
 
-func (q *Queries) CreateAnswer(ctx context.Context, arg CreateAnswerParams) (Answer, error) {
-	row := q.db.QueryRowContext(ctx, createAnswer,
-		arg.ID,
-		arg.Question,
-		arg.Submission,
-		arg.Answer,
-	)
-	var i Answer
-	err := row.Scan(
-		&i.ID,
-		&i.Question,
-		&i.Submission,
-		&i.Answer,
-	)
-	return i, err
+func (q *Queries) CreateAnswer(ctx context.Context, arg CreateAnswerParams) (int32, error) {
+	row := q.db.QueryRowContext(ctx, createAnswer, arg.Question, arg.Submission, arg.Answer)
+	var id int32
+	err := row.Scan(&id)
+	return id, err
 }

@@ -10,23 +10,17 @@ import (
 )
 
 const createSubmission = `-- name: CreateSubmission :one
-INSERT INTO "submissions" ("id", "user", "assignment") VALUES ($1, $2, $3) RETURNING id, "user", assignment, created_at
+INSERT INTO "submissions" ("user", "assignment") VALUES ($1, $2) RETURNING "id"
 `
 
 type CreateSubmissionParams struct {
-	ID         int32  `json:"id"`
 	User       string `json:"user"`
 	Assignment int32  `json:"assignment"`
 }
 
-func (q *Queries) CreateSubmission(ctx context.Context, arg CreateSubmissionParams) (Submission, error) {
-	row := q.db.QueryRowContext(ctx, createSubmission, arg.ID, arg.User, arg.Assignment)
-	var i Submission
-	err := row.Scan(
-		&i.ID,
-		&i.User,
-		&i.Assignment,
-		&i.CreatedAt,
-	)
-	return i, err
+func (q *Queries) CreateSubmission(ctx context.Context, arg CreateSubmissionParams) (int32, error) {
+	row := q.db.QueryRowContext(ctx, createSubmission, arg.User, arg.Assignment)
+	var id int32
+	err := row.Scan(&id)
+	return id, err
 }

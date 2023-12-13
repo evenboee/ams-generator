@@ -10,33 +10,25 @@ import (
 )
 
 const createFeedback = `-- name: CreateFeedback :one
-INSERT INTO "feedback" ("id", "review", "answer", "rating", "feedback") 
-    VALUES ($1, $2, $3, $4, $5) RETURNING id, review, answer, rating, feedback
+INSERT INTO "feedback" ("review", "answer", "rating", "feedback") 
+    VALUES ($1, $2, $3, $4) RETURNING "id"
 `
 
 type CreateFeedbackParams struct {
-	ID       int32  `json:"id"`
 	Review   int32  `json:"review"`
 	Answer   int32  `json:"answer"`
 	Rating   int32  `json:"rating"`
 	Feedback string `json:"feedback"`
 }
 
-func (q *Queries) CreateFeedback(ctx context.Context, arg CreateFeedbackParams) (Feedback, error) {
+func (q *Queries) CreateFeedback(ctx context.Context, arg CreateFeedbackParams) (int32, error) {
 	row := q.db.QueryRowContext(ctx, createFeedback,
-		arg.ID,
 		arg.Review,
 		arg.Answer,
 		arg.Rating,
 		arg.Feedback,
 	)
-	var i Feedback
-	err := row.Scan(
-		&i.ID,
-		&i.Review,
-		&i.Answer,
-		&i.Rating,
-		&i.Feedback,
-	)
-	return i, err
+	var id int32
+	err := row.Scan(&id)
+	return id, err
 }

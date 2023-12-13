@@ -11,17 +11,25 @@ import (
 )
 
 const createAssignment = `-- name: CreateAssignment :one
-INSERT INTO "assignments" ("course", "time_due") VALUES ($1, $2) RETURNING course, time_due
+INSERT INTO "assignments" ("course", "name", "reviews_per_submission", "time_due") 
+    VALUES ($1, $2, $3, $4) RETURNING "id"
 `
 
 type CreateAssignmentParams struct {
-	Course  int32     `json:"course"`
-	TimeDue time.Time `json:"time_due"`
+	Course               int32     `json:"course"`
+	Name                 string    `json:"name"`
+	ReviewsPerSubmission int32     `json:"reviews_per_submission"`
+	TimeDue              time.Time `json:"time_due"`
 }
 
-func (q *Queries) CreateAssignment(ctx context.Context, arg CreateAssignmentParams) (Assignment, error) {
-	row := q.db.QueryRowContext(ctx, createAssignment, arg.Course, arg.TimeDue)
-	var i Assignment
-	err := row.Scan(&i.Course, &i.TimeDue)
-	return i, err
+func (q *Queries) CreateAssignment(ctx context.Context, arg CreateAssignmentParams) (int32, error) {
+	row := q.db.QueryRowContext(ctx, createAssignment,
+		arg.Course,
+		arg.Name,
+		arg.ReviewsPerSubmission,
+		arg.TimeDue,
+	)
+	var id int32
+	err := row.Scan(&id)
+	return id, err
 }

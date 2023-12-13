@@ -9,30 +9,19 @@ import (
 	"context"
 )
 
-const crateQuestion = `-- name: CrateQuestion :one
-INSERT INTO "questions" ("id", "assignment", "prompt", "order") VALUES ($1, $2, $3, $4) RETURNING id, assignment, prompt, "order"
+const createQuestion = `-- name: CreateQuestion :one
+INSERT INTO "questions" ("assignment", "prompt", "order") VALUES ($1, $2, $3) RETURNING "id"
 `
 
-type CrateQuestionParams struct {
-	ID         int32  `json:"id"`
+type CreateQuestionParams struct {
 	Assignment int32  `json:"assignment"`
 	Prompt     string `json:"prompt"`
 	Order      int32  `json:"order"`
 }
 
-func (q *Queries) CrateQuestion(ctx context.Context, arg CrateQuestionParams) (Question, error) {
-	row := q.db.QueryRowContext(ctx, crateQuestion,
-		arg.ID,
-		arg.Assignment,
-		arg.Prompt,
-		arg.Order,
-	)
-	var i Question
-	err := row.Scan(
-		&i.ID,
-		&i.Assignment,
-		&i.Prompt,
-		&i.Order,
-	)
-	return i, err
+func (q *Queries) CreateQuestion(ctx context.Context, arg CreateQuestionParams) (int32, error) {
+	row := q.db.QueryRowContext(ctx, createQuestion, arg.Assignment, arg.Prompt, arg.Order)
+	var id int32
+	err := row.Scan(&id)
+	return id, err
 }

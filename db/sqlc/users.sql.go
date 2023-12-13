@@ -9,8 +9,8 @@ import (
 	"context"
 )
 
-const createUser = `-- name: CreateUser :one
-INSERT INTO "users" ("id", "display_name") VALUES ($1, $2) RETURNING id, display_name
+const createUser = `-- name: CreateUser :exec
+INSERT INTO "users" ("id", "display_name") VALUES ($1, $2)
 `
 
 type CreateUserParams struct {
@@ -18,15 +18,13 @@ type CreateUserParams struct {
 	DisplayName string `json:"display_name"`
 }
 
-func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, createUser, arg.ID, arg.DisplayName)
-	var i User
-	err := row.Scan(&i.ID, &i.DisplayName)
-	return i, err
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
+	_, err := q.db.ExecContext(ctx, createUser, arg.ID, arg.DisplayName)
+	return err
 }
 
-const createUserCourseEnrollment = `-- name: CreateUserCourseEnrollment :one
-INSERT INTO "user_course_enrollments" ("user", "course") VALUES ($1, $2) RETURNING "user", course
+const createUserCourseEnrollment = `-- name: CreateUserCourseEnrollment :exec
+INSERT INTO "user_course_enrollments" ("user", "course") VALUES ($1, $2)
 `
 
 type CreateUserCourseEnrollmentParams struct {
@@ -34,11 +32,9 @@ type CreateUserCourseEnrollmentParams struct {
 	Course int32  `json:"course"`
 }
 
-func (q *Queries) CreateUserCourseEnrollment(ctx context.Context, arg CreateUserCourseEnrollmentParams) (UserCourseEnrollment, error) {
-	row := q.db.QueryRowContext(ctx, createUserCourseEnrollment, arg.User, arg.Course)
-	var i UserCourseEnrollment
-	err := row.Scan(&i.User, &i.Course)
-	return i, err
+func (q *Queries) CreateUserCourseEnrollment(ctx context.Context, arg CreateUserCourseEnrollmentParams) error {
+	_, err := q.db.ExecContext(ctx, createUserCourseEnrollment, arg.User, arg.Course)
+	return err
 }
 
 const getUser = `-- name: GetUser :one

@@ -9,15 +9,15 @@ import (
 )
 
 type Querier interface {
-	CrateQuestion(ctx context.Context, arg CrateQuestionParams) (Question, error)
-	CreateAnswer(ctx context.Context, arg CreateAnswerParams) (Answer, error)
-	CreateAssignment(ctx context.Context, arg CreateAssignmentParams) (Assignment, error)
-	CreateCourse(ctx context.Context, arg CreateCourseParams) (Course, error)
-	CreateFeedback(ctx context.Context, arg CreateFeedbackParams) (Feedback, error)
-	CreateReview(ctx context.Context, arg CreateReviewParams) (Review, error)
-	CreateSubmission(ctx context.Context, arg CreateSubmissionParams) (Submission, error)
-	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
-	CreateUserCourseEnrollment(ctx context.Context, arg CreateUserCourseEnrollmentParams) (UserCourseEnrollment, error)
+	CreateAnswer(ctx context.Context, arg CreateAnswerParams) (int32, error)
+	CreateAssignment(ctx context.Context, arg CreateAssignmentParams) (int32, error)
+	CreateCourse(ctx context.Context, arg CreateCourseParams) (int32, error)
+	CreateFeedback(ctx context.Context, arg CreateFeedbackParams) (int32, error)
+	CreateQuestion(ctx context.Context, arg CreateQuestionParams) (int32, error)
+	CreateReview(ctx context.Context, arg CreateReviewParams) (int32, error)
+	CreateSubmission(ctx context.Context, arg CreateSubmissionParams) (int32, error)
+	CreateUser(ctx context.Context, arg CreateUserParams) error
+	CreateUserCourseEnrollment(ctx context.Context, arg CreateUserCourseEnrollmentParams) error
 	GetUser(ctx context.Context, id string) (User, error)
 }
 

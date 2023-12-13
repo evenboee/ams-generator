@@ -1,6 +1,6 @@
 -- SQL dump generated using DBML (dbml-lang.org)
 -- Database: PostgreSQL
--- Generated at: 2023-12-10T22:29:29.257Z
+-- Generated at: 2023-12-12T23:31:36.823Z
 
 CREATE TABLE "courses" (
   "id" serial PRIMARY KEY,
@@ -9,7 +9,10 @@ CREATE TABLE "courses" (
 );
 
 CREATE TABLE "assignments" (
-  "course" int PRIMARY KEY,
+  "id" serial PRIMARY KEY,
+  "name" varchar NOT NULL,
+  "course" int NOT NULL,
+  "reviews_per_submission" int NOT NULL DEFAULT 0,
   "time_due" timestamptz NOT NULL
 );
 
@@ -93,7 +96,7 @@ CREATE INDEX ON "feedback" ("answer");
 
 ALTER TABLE "assignments" ADD FOREIGN KEY ("course") REFERENCES "courses" ("id");
 
-ALTER TABLE "questions" ADD FOREIGN KEY ("assignment") REFERENCES "assignments" ("course");
+ALTER TABLE "questions" ADD FOREIGN KEY ("assignment") REFERENCES "assignments" ("id");
 
 ALTER TABLE "user_course_enrollments" ADD FOREIGN KEY ("user") REFERENCES "users" ("id");
 
@@ -101,7 +104,7 @@ ALTER TABLE "user_course_enrollments" ADD FOREIGN KEY ("course") REFERENCES "cou
 
 ALTER TABLE "submissions" ADD FOREIGN KEY ("user") REFERENCES "users" ("id");
 
-ALTER TABLE "submissions" ADD FOREIGN KEY ("assignment") REFERENCES "assignments" ("course");
+ALTER TABLE "submissions" ADD FOREIGN KEY ("assignment") REFERENCES "assignments" ("id");
 
 ALTER TABLE "answers" ADD FOREIGN KEY ("question") REFERENCES "questions" ("id");
 

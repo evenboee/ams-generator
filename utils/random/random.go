@@ -60,6 +60,11 @@ func Int() int {
 	return rand.Int()
 }
 
+// PosInt returns a random positive int32
+func PosInt32() int32 {
+	return rand.Int31()
+}
+
 // Intr returns a random int between min and max
 func Intr(min, max int) int {
 	return min + rand.Intn(max-min+1)

@@ -15,8 +15,9 @@ Table courses {
 
 Table assignments {
   // TODO: consider making id sep. val.
-  course int [pk, ref: > courses.id]
+  id serial [pk]
   name varchar [not null]
+  course int [not null, ref: > courses.id]
   reviews_per_submission int [not null, default: 0]
 
   time_due timestamptz [not null]
@@ -24,7 +25,7 @@ Table assignments {
 
 Table questions {
   id serial [pk]
-  assignment int [not null, ref: > assignments.course]
+  assignment int [not null, ref: > assignments.id]
   prompt varchar [not null]
 
   order int [not null]
@@ -53,7 +54,7 @@ Table user_course_enrollments {
 Table submissions {
   id serial [pk]
   user varchar [not null, ref: > users.id]
-  assignment int [not null, ref: > assignments.course]
+  assignment int [not null, ref: > assignments.id]
 
   created_at timestamptz [not null, default: `now()`]
 

@@ -8,21 +8,21 @@ import (
 
 type Config struct {
 	// Scaling factor. The other resources (except users) will be multiplied by this number
-	CourseCount int `yaml:"course_count"`
+	CourseCount int32 `yaml:"course_count"`
 	// How many users to generate
-	UserCount int `yaml:"user_count"`
+	UserCount int32 `yaml:"user_count"`
 	// How many questions per course
-	AssignmentsPerCourse int `yaml:"assignments_per_course"`
+	AssignmentsPerCourse int32 `yaml:"assignments_per_course"`
 	// How many questions per assignment
-	QuestionsPerAssignment int `yaml:"questions_per_assignment"`
+	QuestionsPerAssignment int32 `yaml:"questions_per_assignment"`
 	// How many reviews per submission
-	ReviewsPerSubmission int `yaml:"reviews_per_submission"`
+	ReviewsPerSubmission int32 `yaml:"reviews_per_submission"`
 	// How many submissions per user per assignment
-	SubmissionsPerUser int `yaml:"submissions_per_user"`
+	SubmissionsPerUser int32 `yaml:"submissions_per_user"`
 }
 
 // // How many submissions per assignment
-// SubmissionsPerAssignment int `yaml:"submissions_per_assignment"`
+// SubmissionsPerAssignment int32 `yaml:"submissions_per_assignment"`
 
 func defaultConfig() *Config {
 	return &Config{

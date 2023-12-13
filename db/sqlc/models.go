@@ -17,8 +17,11 @@ type Answer struct {
 }
 
 type Assignment struct {
-	Course  int32     `json:"course"`
-	TimeDue time.Time `json:"time_due"`
+	ID                   int32     `json:"id"`
+	Name                 string    `json:"name"`
+	Course               int32     `json:"course"`
+	ReviewsPerSubmission int32     `json:"reviews_per_submission"`
+	TimeDue              time.Time `json:"time_due"`
 }
 
 type Course struct {

@@ -12,33 +12,25 @@ import (
 )
 
 const createReview = `-- name: CreateReview :one
-INSERT INTO "reviews" ("id", "submission", "reviewer_id", "finished_at", "created_at") 
-    VALUES ($1, $2, $3, $4, $5) RETURNING id, submission, reviewer_id, finished_at, created_at
+INSERT INTO "reviews" ("submission", "reviewer_id", "finished_at", "created_at") 
+    VALUES ($1, $2, $3, $4) RETURNING "id"
 `
 
 type CreateReviewParams struct {
-	ID         int32        `json:"id"`
 	Submission int32        `json:"submission"`
 	ReviewerID string       `json:"reviewer_id"`
 	FinishedAt sql.NullTime `json:"finished_at"`
 	CreatedAt  time.Time    `json:"created_at"`
 }
 
-func (q *Queries) CreateReview(ctx context.Context, arg CreateReviewParams) (Review, error) {
+func (q *Queries) CreateReview(ctx context.Context, arg CreateReviewParams) (int32, error) {
 	row := q.db.QueryRowContext(ctx, createReview,
-		arg.ID,
 		arg.Submission,
 		arg.ReviewerID,
 		arg.FinishedAt,
 		arg.CreatedAt,
 	)
-	var i Review
-	err := row.Scan(
-		&i.ID,
-		&i.Submission,
-		&i.ReviewerID,
-		&i.FinishedAt,
-		&i.CreatedAt,
-	)
-	return i, err
+	var id int32
+	err := row.Scan(&id)
+	return id, err
 }
