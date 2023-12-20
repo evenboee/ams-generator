@@ -18,7 +18,9 @@ type Querier interface {
 	CreateSubmission(ctx context.Context, arg CreateSubmissionParams) (int32, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) error
 	CreateUserCourseEnrollment(ctx context.Context, arg CreateUserCourseEnrollmentParams) error
+	GetAssignment(ctx context.Context, id int32) (GetAssignmentRow, error)
 	GetUser(ctx context.Context, id string) (User, error)
+	Test(ctx context.Context) (int32, error)
 }
 
 var _ Querier = (*Queries)(nil)

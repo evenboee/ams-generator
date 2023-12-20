@@ -4,6 +4,7 @@ go 1.21.0
 
 require (
 	github.com/evenboee/go-config v0.0.0-20231019224940-5021327280bd
+	github.com/evenboee/table v0.0.0-20231116220657-885e50d5b08b
 	github.com/golang-migrate/migrate/v4 v4.16.2
 	github.com/lib/pq v1.10.9
 	github.com/schollz/progressbar/v3 v3.14.1

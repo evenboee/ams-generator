@@ -22,7 +22,7 @@ type CreateFeedbackParams struct {
 }
 
 func (q *Queries) CreateFeedback(ctx context.Context, arg CreateFeedbackParams) (int32, error) {
-	row := q.db.QueryRowContext(ctx, createFeedback,
+	row := q.queryRow(ctx, q.createFeedbackStmt, createFeedback,
 		arg.Review,
 		arg.Answer,
 		arg.Rating,

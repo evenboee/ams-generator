@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"database/sql"
+	"flag"
 	"fmt"
+	"log"
 
 	db "github.com/evenboee/ams-generator/db/sqlc"
 	"github.com/evenboee/ams-generator/generator"
@@ -31,19 +33,55 @@ func require[T any](d T, err error) T {
 	return d
 }
 
+var (
+	mode       = flag.String("mode", "none", "run async generation")
+	configFile = flag.String("config", "config.yaml", "config file")
+	envFile    = flag.String("env", ".env", "env file")
+	maxConn    = flag.Int("conns", 0, "max connections")
+)
+
 func main() {
-	genConf := require(generator.LoadConfig("config.yaml"))
-	dbConf := config.MustLoadFile[DBConfig](".env")
+	flag.Parse()
+
+	if *mode == "none" {
+		fmt.Println("specify mode")
+		return
+	}
+
+	genConf := require(generator.LoadConfig(*configFile))
+	dbConf := config.MustLoadFile[DBConfig](*envFile)
 
 	dsn := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable", dbConf.User, dbConf.Pass, dbConf.Host, dbConf.Port, dbConf.Name)
 	conn := require(sql.Open("postgres", dsn))
 	guard(conn.Ping())
-	defer conn.Close()
+
+	if *maxConn > 0 {
+		conn.SetMaxOpenConns(*maxConn)
+	}
 
 	store := db.NewStore(conn)
 
-	err := generator.Generate(context.Background(), store, genConf)
-	if err != nil {
-		panic(err)
+	switch *mode {
+	case "async":
+		err := generator.GenerateAsync(context.Background(), store, genConf)
+		if err != nil {
+			panic(err)
+		}
+	case "sync":
+		err := generator.Generate(context.Background(), store, genConf)
+		if err != nil {
+			panic(err)
+		}
+	case "3":
+		genConf2 := require(generator.LoadConfig2(*configFile))
+
+		errChan := generator.GenerateAsync2(context.Background(), store, genConf2)
+		for err := range errChan {
+			if err != nil {
+				log.Printf("error %T %s\n", err, err.Error())
+			}
+		}
+	default:
+		panic("invalid mode")
 	}
 }

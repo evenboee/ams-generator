@@ -16,6 +16,15 @@ type Answer struct {
 	Answer     string `json:"answer"`
 }
 
+type AnswersSummary struct {
+	ID         int32   `json:"id"`
+	Question   int32   `json:"question"`
+	Submission int32   `json:"submission"`
+	Answer     string  `json:"answer"`
+	Count      int64   `json:"count"`
+	Rating     float64 `json:"rating"`
+}
+
 type Assignment struct {
 	ID                   int32     `json:"id"`
 	Name                 string    `json:"name"`
@@ -24,10 +33,42 @@ type Assignment struct {
 	TimeDue              time.Time `json:"time_due"`
 }
 
+type AssignmentRatingCache struct {
+	AssignmentID int32           `json:"assignment_id"`
+	AvgRating    sql.NullFloat64 `json:"avg_rating"`
+	ExpiresAt    time.Time       `json:"expires_at"`
+}
+
+type AssignmentSummary struct {
+	ID                   int32     `json:"id"`
+	Name                 string    `json:"name"`
+	Course               int32     `json:"course"`
+	ReviewsPerSubmission int32     `json:"reviews_per_submission"`
+	TimeDue              time.Time `json:"time_due"`
+	Rating               float64   `json:"rating"`
+}
+
+type AssignmentWithRating struct {
+	ID                   int32     `json:"id"`
+	Name                 string    `json:"name"`
+	Course               int32     `json:"course"`
+	ReviewsPerSubmission int32     `json:"reviews_per_submission"`
+	TimeDue              time.Time `json:"time_due"`
+	Rating               float64   `json:"rating"`
+}
+
 type Course struct {
 	ID   int32  `json:"id"`
 	Code string `json:"code"`
 	Year int32  `json:"year"`
+}
+
+type CourseSummary struct {
+	ID        int32   `json:"id"`
+	Code      string  `json:"code"`
+	Year      int32   `json:"year"`
+	Count     int64   `json:"count"`
+	AvgRating float64 `json:"avg_rating"`
 }
 
 type Feedback struct {
@@ -43,6 +84,15 @@ type Question struct {
 	Assignment int32  `json:"assignment"`
 	Prompt     string `json:"prompt"`
 	Order      int32  `json:"order"`
+}
+
+type QuestionSummary struct {
+	ID         int32   `json:"id"`
+	Assignment int32   `json:"assignment"`
+	Prompt     string  `json:"prompt"`
+	Order      int32   `json:"order"`
+	Count      int64   `json:"count"`
+	Rating     float64 `json:"rating"`
 }
 
 type Review struct {

@@ -19,7 +19,7 @@ type CreateCourseParams struct {
 }
 
 func (q *Queries) CreateCourse(ctx context.Context, arg CreateCourseParams) (int32, error) {
-	row := q.db.QueryRowContext(ctx, createCourse, arg.Code, arg.Year)
+	row := q.queryRow(ctx, q.createCourseStmt, createCourse, arg.Code, arg.Year)
 	var id int32
 	err := row.Scan(&id)
 	return id, err

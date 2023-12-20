@@ -24,7 +24,7 @@ type CreateReviewParams struct {
 }
 
 func (q *Queries) CreateReview(ctx context.Context, arg CreateReviewParams) (int32, error) {
-	row := q.db.QueryRowContext(ctx, createReview,
+	row := q.queryRow(ctx, q.createReviewStmt, createReview,
 		arg.Submission,
 		arg.ReviewerID,
 		arg.FinishedAt,

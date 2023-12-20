@@ -19,7 +19,7 @@ type CreateUserParams struct {
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
-	_, err := q.db.ExecContext(ctx, createUser, arg.ID, arg.DisplayName)
+	_, err := q.exec(ctx, q.createUserStmt, createUser, arg.ID, arg.DisplayName)
 	return err
 }
 
@@ -33,7 +33,7 @@ type CreateUserCourseEnrollmentParams struct {
 }
 
 func (q *Queries) CreateUserCourseEnrollment(ctx context.Context, arg CreateUserCourseEnrollmentParams) error {
-	_, err := q.db.ExecContext(ctx, createUserCourseEnrollment, arg.User, arg.Course)
+	_, err := q.exec(ctx, q.createUserCourseEnrollmentStmt, createUserCourseEnrollment, arg.User, arg.Course)
 	return err
 }
 
@@ -42,7 +42,7 @@ SELECT id, display_name FROM "users" WHERE "id" = $1
 `
 
 func (q *Queries) GetUser(ctx context.Context, id string) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUser, id)
+	row := q.queryRow(ctx, q.getUserStmt, getUser, id)
 	var i User
 	err := row.Scan(&i.ID, &i.DisplayName)
 	return i, err

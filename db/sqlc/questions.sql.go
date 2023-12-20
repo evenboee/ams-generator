@@ -20,7 +20,7 @@ type CreateQuestionParams struct {
 }
 
 func (q *Queries) CreateQuestion(ctx context.Context, arg CreateQuestionParams) (int32, error) {
-	row := q.db.QueryRowContext(ctx, createQuestion, arg.Assignment, arg.Prompt, arg.Order)
+	row := q.queryRow(ctx, q.createQuestionStmt, createQuestion, arg.Assignment, arg.Prompt, arg.Order)
 	var id int32
 	err := row.Scan(&id)
 	return id, err

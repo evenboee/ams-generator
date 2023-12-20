@@ -20,8 +20,19 @@ type CreateAnswerParams struct {
 }
 
 func (q *Queries) CreateAnswer(ctx context.Context, arg CreateAnswerParams) (int32, error) {
-	row := q.db.QueryRowContext(ctx, createAnswer, arg.Question, arg.Submission, arg.Answer)
+	row := q.queryRow(ctx, q.createAnswerStmt, createAnswer, arg.Question, arg.Submission, arg.Answer)
 	var id int32
 	err := row.Scan(&id)
 	return id, err
+}
+
+const test = `-- name: Test :one
+SELECT 1
+`
+
+func (q *Queries) Test(ctx context.Context) (int32, error) {
+	row := q.queryRow(ctx, q.testStmt, test)
+	var column_1 int32
+	err := row.Scan(&column_1)
+	return column_1, err
 }

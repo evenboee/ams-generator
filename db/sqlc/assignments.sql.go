@@ -23,7 +23,7 @@ type CreateAssignmentParams struct {
 }
 
 func (q *Queries) CreateAssignment(ctx context.Context, arg CreateAssignmentParams) (int32, error) {
-	row := q.db.QueryRowContext(ctx, createAssignment,
+	row := q.queryRow(ctx, q.createAssignmentStmt, createAssignment,
 		arg.Course,
 		arg.Name,
 		arg.ReviewsPerSubmission,
@@ -32,4 +32,33 @@ func (q *Queries) CreateAssignment(ctx context.Context, arg CreateAssignmentPara
 	var id int32
 	err := row.Scan(&id)
 	return id, err
+}
+
+const getAssignment = `-- name: GetAssignment :one
+SELECT id, name, course, reviews_per_submission, time_due, get_assignment_rating($1) AS rating
+    FROM assignments
+    WHERE id = $1
+`
+
+type GetAssignmentRow struct {
+	ID                   int32     `json:"id"`
+	Name                 string    `json:"name"`
+	Course               int32     `json:"course"`
+	ReviewsPerSubmission int32     `json:"reviews_per_submission"`
+	TimeDue              time.Time `json:"time_due"`
+	Rating               float64   `json:"rating"`
+}
+
+func (q *Queries) GetAssignment(ctx context.Context, id int32) (GetAssignmentRow, error) {
+	row := q.queryRow(ctx, q.getAssignmentStmt, getAssignment, id)
+	var i GetAssignmentRow
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Course,
+		&i.ReviewsPerSubmission,
+		&i.TimeDue,
+		&i.Rating,
+	)
+	return i, err
 }

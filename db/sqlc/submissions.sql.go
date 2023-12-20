@@ -19,7 +19,7 @@ type CreateSubmissionParams struct {
 }
 
 func (q *Queries) CreateSubmission(ctx context.Context, arg CreateSubmissionParams) (int32, error) {
-	row := q.db.QueryRowContext(ctx, createSubmission, arg.User, arg.Assignment)
+	row := q.queryRow(ctx, q.createSubmissionStmt, createSubmission, arg.User, arg.Assignment)
 	var id int32
 	err := row.Scan(&id)
 	return id, err

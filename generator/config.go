@@ -21,6 +21,15 @@ type Config struct {
 	SubmissionsPerUser int32 `yaml:"submissions_per_user"`
 }
 
+type Config2 struct {
+	CourseCount         int32 `yaml:"course_count"`
+	CourseYears         int32 `yaml:"course_years"`
+	CourseUsers         int32 `yaml:"course_users"`
+	CourseAssignments   int32 `yaml:"course_assignments"`
+	AssignmentQuestions int32 `yaml:"assignment_questions"`
+	SubmissionReviews   int32 `yaml:"submission_reviews"`
+}
+
 // // How many submissions per assignment
 // SubmissionsPerAssignment int32 `yaml:"submissions_per_assignment"`
 
@@ -42,6 +51,17 @@ func LoadConfig(path string) (*Config, error) {
 	}
 
 	config := defaultConfig()
+	err = yaml.Unmarshal(content, config)
+	return config, err
+}
+
+func LoadConfig2(path string) (*Config2, error) {
+	content, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	config := &Config2{}
 	err = yaml.Unmarshal(content, config)
 	return config, err
 }
